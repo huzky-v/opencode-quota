@@ -1182,6 +1182,7 @@ const DEBUG_DETAILS = {
     config_source: keySource,
   },
   "quota-providers": {},
+  "codex-lb": {},
 } satisfies Record<CanonicalQuotaProviderId, DebugRules>;
 
 /**

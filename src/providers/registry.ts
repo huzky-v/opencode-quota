@@ -11,6 +11,7 @@ import {
 import { alibabaCodingPlanProvider, alibabaTokenPlanProvider } from "./alibaba.js";
 import { anthropicApiProvider } from "./anthropic-api.js";
 import { anthropicProvider } from "./anthropic.js";
+import { codexLbProvider } from "./codex-lb.js";
 import { commandCodeProvider } from "./command-code.js";
 import { copilotProvider } from "./copilot.js";
 import { cursorProvider } from "./cursor.js";
@@ -40,6 +41,7 @@ const PROVIDERS_BY_ID = {
   openrouter: openRouterProvider,
   cursor: cursorProvider,
   commandcode: commandCodeProvider,
+  "codex-lb": codexLbProvider,
   "alibaba-coding-plan": alibabaCodingPlanProvider,
   "alibaba-token-plan": alibabaTokenPlanProvider,
   "google-gemini-cli": googleGeminiCliProvider,

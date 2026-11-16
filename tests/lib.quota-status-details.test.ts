@@ -20,6 +20,7 @@ const PROVIDER_FILES: Readonly<Record<string, readonly string[]>> = {
   "anthropic.ts": ["anthropic"],
   "anthropic-api.ts": ["anthropic-api"],
   "command-code.ts": ["commandcode"],
+  "codex-lb.ts": ["codex-lb"],
   "copilot.ts": ["copilot"],
   "cursor.ts": ["cursor"],
   "deepseek.ts": ["deepseek"],
