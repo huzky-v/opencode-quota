@@ -192,6 +192,27 @@ export function statusGroups(
   windows: Readonly<Record<string, WindowChoice>>,
 ): Group[] {
   return groups.flatMap((group) => {
+    if (group.providerId === "codex-lb") {
+      const windows = [
+        ["five_hour", "5h"],
+        ["weekly", "7d"],
+      ] as const;
+      const split = windows.flatMap(([key, label]) => {
+        const row = group.rows.find((item) => item.row.id === `codex-lb.${key}`);
+        if (!row) return [];
+        const name = `${group.name} (${label})`;
+        return [
+          {
+            ...group,
+            id: `${group.id}.${key}`,
+            name,
+            title: group.account ? `${name} (${group.account})` : name,
+            rows: [row],
+          },
+        ];
+      });
+      if (split.length > 0) return split;
+    }
     const credits = group.rows.find(({ row }) => row.id === "openai.codex_credits");
     if (!credits) return [group];
     const creditGroup: Group = {

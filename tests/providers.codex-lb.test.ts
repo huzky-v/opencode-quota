@@ -1,6 +1,9 @@
 import { expect, it } from "vite-plus/test";
 
+import { rowsFromProviderResult } from "../src/core/rows.js";
 import { codexLbProvider as provider } from "../src/providers/codex-lb.js";
+import { defaultSettings } from "../src/settings/index.js";
+import { lineText, statusLayout, statusLineInput } from "../src/view/text.js";
 import { fakeHttp, requestHeader, useProviderWorld } from "./helpers/provider-fetch.js";
 
 useProviderWorld();
@@ -70,6 +73,36 @@ it("keeps services separate and skips missing windows", async () => {
     ["Codex LB (a)", ["five_hour", "weekly"]],
     ["Codex LB (b)", ["weekly"]],
   ]);
+});
+
+it("shows both 5h and 7d on the bottom status bar", async () => {
+  const ctx = context([service("primary", "https://lb.example/v1")]);
+  fakeHttp(() => usage);
+  const fetched = rowsFromProviderResult(provider.id, await provider.fetch(ctx), 0);
+  const snapshot = {
+    version: 6 as const,
+    providers: [
+      {
+        providerId: provider.id,
+        label: "Codex LB",
+        rows: fetched.rows,
+        refreshing: false,
+        debug: [],
+        checkedAtMs: 0,
+      },
+    ],
+    resetNotices: [],
+    generatedAtMs: 0,
+    serverId: "test",
+    revision: 1,
+  };
+  const input = statusLineInput(snapshot, defaultSettings(), 0);
+  expect(input.groups.map((group) => group.id)).toEqual(["codex-lb.five_hour", "codex-lb.weekly"]);
+  const bar = statusLayout(input, 200, 0, "numbers").shown.map(lineText).join(" | ");
+  expect(bar).toContain("Codex LB (5h)");
+  expect(bar).toContain("Codex LB (7d)");
+  expect(bar).toContain("88%");
+  expect(bar).toContain("46%");
 });
 
 it("never requests an unconfigured service or an unsafe URL", async () => {

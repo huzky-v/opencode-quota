@@ -486,7 +486,7 @@ Shows the **5h** and **Weekly** quota and reset times. Uses the `commandcode` ke
 
 ### Codex LB
 
-Install and configure the companion `opencode-codex-lb` plugin first. For each service it registers as `codex-lb-<service>`, OpenCode Quota uses the runtime provider's `baseURL` and `apiKey` (including resolved `{env:NAME}` keys) to request `<baseURL>/usage` with bearer authentication. The configured base URL should end in `/v1`, giving `GET /v1/usage`. It shows the aggregate credit limits in the **5h** and **Weekly** (7d) windows, with reset times; it does not add the duplicate `upstream_limits` or the account-pool percentages. Services without a resolved key or valid HTTPS URL are not queried. Each service has its own account and cache identity.
+Install and configure the companion `opencode-codex-lb` plugin first. For each service it registers as `codex-lb-<service>`, OpenCode Quota uses the runtime provider's `baseURL` and `apiKey` (including resolved `{env:NAME}` keys) to request `<baseURL>/usage` with bearer authentication. The configured base URL should end in `/v1`, giving `GET /v1/usage`. It shows the aggregate credit limits in the **5h (5h)** and **Weekly (7d)** rows, with reset times; the bottom status bar shows both windows separately as **Codex LB (5h)** and **Codex LB (7d)**. It does not add the duplicate `upstream_limits` or the account-pool percentages. Services without a resolved key or valid HTTPS URL are not queried. Each service has its own account and cache identity.
 
 <a id="deepseek"></a>
 
