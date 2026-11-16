@@ -12,6 +12,7 @@ vi.mock("../src/lib/quota-retry-wait.js", () => ({
   resolveQuotaResetRetryDelayMs: resolveRetryDelay,
 }));
 
+import type { ProviderSourceHost } from "../src/core/provider-source.js";
 import {
   clearCredentialRowCacheForTests,
   getCredentialSourceDiagnostics,
@@ -20,6 +21,7 @@ import {
 } from "../src/lib/opencode-auth.js";
 import { formatQuotaReportMessage } from "../src/lib/quota-report-message.js";
 import plugin from "../src/plugin.js";
+import { codexLbProvider } from "../src/providers/codex-lb.js";
 import { settingsPath } from "../src/settings/file.js";
 import { createFakeIntegration } from "./helpers/fake-integration.js";
 import { createServerContext, type ServerCommand } from "./helpers/plugin-test-harness.js";
@@ -99,6 +101,37 @@ describe("V2 server plugin", () => {
     expect(ctx.command.transform).toHaveBeenCalledOnce();
     expect((plugin as Record<string, unknown>)["command.execute.before"]).toBeUndefined();
     expect((plugin as Record<string, unknown>).config).toBeUndefined();
+  });
+
+  it("passes injected Codex LB connection settings to its quota provider", async () => {
+    const { ctx, tools } = createServerContext({
+      openCodeProviders: [
+        {
+          id: "codex-lb-paid",
+          name: "Codex LB (paid)",
+          settings: { baseURL: "https://lb.example/v1", apiKey: "fixture-key" },
+        },
+        { id: "openai", name: "OpenAI", settings: { apiKey: "other-key" } },
+      ],
+    });
+    buildOutput.mockResolvedValue({ text: "Quota ready", json: { providers: [] } });
+    await plugin.setup(ctx as never);
+    await tools
+      .find((tool) => tool.name === "quota_status")
+      ?.execute({}, { sessionID: "session-test" });
+    const host = buildOutput.mock.calls[0][0] as ProviderSourceHost;
+    expect(await host.client.config.providers()).toEqual({
+      data: {
+        providers: [
+          {
+            id: "codex-lb-paid",
+            settings: { baseURL: "https://lb.example/v1", apiKey: "fixture-key" },
+          },
+          { id: "openai" },
+        ],
+      },
+    });
+    expect(await codexLbProvider.isAvailable({ client: host.client } as never)).toBe(true);
   });
 
   it("registers /quota, /quota_status, /quota_usage and the /tokens_* names for Web and Desktop", async () => {

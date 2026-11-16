@@ -119,7 +119,17 @@ export function createQuotaServerPlugin(
         config: {
           providers: async () => ({
             data: {
-              providers: (await ctx.provider.list()).data.map((provider) => ({ id: provider.id })),
+              providers: (await ctx.provider.list()).data.map((provider) => ({
+                id: provider.id,
+                ...(provider.id.startsWith("codex-lb-")
+                  ? {
+                      settings: {
+                        baseURL: provider.settings?.baseURL,
+                        apiKey: provider.settings?.apiKey,
+                      },
+                    }
+                  : {}),
+              })),
             },
           }),
         },

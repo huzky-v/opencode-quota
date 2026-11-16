@@ -70,7 +70,9 @@ export function createServerContext({
   events = { async *[Symbol.asyncIterator]() {} },
 }: {
   directory?: string;
-  openCodeProviders?: Array<string | { id: string; name: string }>;
+  openCodeProviders?: Array<
+    string | { id: string; name: string; settings?: Record<string, unknown> }
+  >;
   sessionGet?: MockFunction;
   events?: AsyncIterable<{ type: string }>;
 } = {}) {

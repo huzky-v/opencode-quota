@@ -23,7 +23,11 @@ export interface QuotaProviderMatchContext {
 export interface QuotaProviderContext {
   client: {
     config: {
-      providers: () => Promise<{ data?: { providers: Array<{ id: string }> } }>;
+      providers: () => Promise<{
+        data?: {
+          providers: Array<{ id: string; settings?: { baseURL?: unknown; apiKey?: unknown } }>;
+        };
+      }>;
     };
   };
   resolveRuntimeProviderIds: RuntimeProviderIdResolver;
