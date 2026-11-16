@@ -21,6 +21,7 @@ Most providers work automatically. `Automatic` means OpenCode Quota reuses the l
 | Anthropic (Claude) | [Needs setup](#anthropic-claude)       | Local CLI/OAuth    | Quota              |
 | Claude API         | [Needs setup](#claude-api)              | Dashboard API      | Balance            |
 | Command Code       | Automatic                              | Remote API         | Quota              |
+| Codex LB           | [Needs setup](#codex-lb)               | Remote API         | Quota              |
 | Cursor             | [Needs setup](#cursor)                 | Local estimate     | Budget and spend   |
 | GitHub Copilot     | Automatic                              | Remote API         | Budget and usage   |
 | Google AGY         | [Needs setup](#google-agy-quick-setup) | Remote API         | Quota              |
@@ -42,6 +43,7 @@ Most providers work automatically. `Automatic` means OpenCode Quota reuses the l
 | Anthropic (Claude)      | [Needs setup](#anthropic-claude)       | Local CLI/OAuth    | Quota              |
 | Claude API              | [Needs setup](#claude-api)              | Dashboard API      | Balance            |
 | Command Code            | Automatic                              | Remote API         | Quota              |
+| Codex LB                | [Needs setup](#codex-lb)               | Remote API         | Quota              |
 | Cursor                  | [Needs setup](#cursor)                 | Local estimate     | Budget and spend   |
 | Gemini CLI              | [Needs setup](#gemini-cli)             | Remote API         | Quota              |
 | GitHub Copilot          | [Needs setup](#github-copilot)         | Remote API         | Budget and usage   |
@@ -479,6 +481,12 @@ Quota checks `google-gemini-cli` when it finds it.
 ### Command Code
 
 Shows the **5h** and **Weekly** quota and reset times. Uses the `commandcode` key saved in OpenCode, or see [API keys](#api-keys). Organization logins read that organization's limits.
+
+<a id="codex-lb"></a>
+
+### Codex LB
+
+Install and configure the companion `opencode-codex-lb` plugin first. For each service it registers as `codex-lb-<service>`, OpenCode Quota uses the runtime provider's `baseURL` and `apiKey` (including resolved `{env:NAME}` keys) to request `<baseURL>/usage` with bearer authentication. The configured base URL should end in `/v1`, giving `GET /v1/usage`. It shows the aggregate credit limits in the **5h** and **Weekly** (7d) windows, with reset times; it does not add the duplicate `upstream_limits` or the account-pool percentages. Services without a resolved key or valid HTTPS URL are not queried. Each service has its own account and cache identity.
 
 <a id="deepseek"></a>
 
